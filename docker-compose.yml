@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  app:
+    build:
+      context: .
+    image: "local/app:${TAG:-latest}"
+    restart: always
+    container_name: myapp
+    env_file: .env.example
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8888:8888
+    healthcheck:
+      test: curl -I http://localhost:8888/store | grep '200 OK'
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "30m"
+        max-file: "1"
